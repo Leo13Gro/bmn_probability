@@ -27,25 +27,27 @@ public:
 
     Pid(std::string name, std::string a_pol, std::string m_pol, std::string s_pol, TH2D* histo2d, std::vector<int> range, int step, std::vector<std::pair<double, double>> fit_ranges) {
         this->name = std::move(name);
-        f_a = new TF1(("f_a" + name).c_str(), a_pol.c_str());
-        f_m = new TF1(("f_m" + name).c_str(), m_pol.c_str());
-        f_s = new TF1(("f_s" + name).c_str(), s_pol.c_str());
+        f_a = new TF1("f_a", a_pol.c_str());
+        f_m = new TF1("f_m", m_pol.c_str());
+        f_s = new TF1("f_s", s_pol.c_str());
         this->histo2d = histo2d;
         this->range = range;
         this->step = step;
         this->fit_ranges = fit_ranges;
         are_different_ranges = true;
+        fit_pid();
     };
     Pid(std::string name, std::string a_pol, std::string m_pol, std::string s_pol, TH2D* histo2d, std::vector<int> range, int step, std::pair<double, double> fit_range) {
         this->name = std::move(name);
-        f_a = new TF1(("f_a" + name).c_str(), a_pol.c_str());
-        f_m = new TF1(("f_m" + name).c_str(), m_pol.c_str());
-        f_s = new TF1(("f_s" + name).c_str(), s_pol.c_str());
+        f_a = new TF1("f_a", a_pol.c_str());
+        f_m = new TF1("f_m", m_pol.c_str());
+        f_s = new TF1("f_s", s_pol.c_str());
         this->histo2d = histo2d;
         this->range = range;
         this->step = step;
         this->fit_range = fit_range;
         are_different_ranges = false;
+        fit_pid();
     };
     void fit_pid(){
         if (are_different_ranges)
@@ -92,8 +94,8 @@ public:
         delete c;
     }
     void selection_pid_ranges(const std::string& p_pol, const std::string& n_pol) {
-        auto f_p = new TF1(("f_p" + name).c_str(), p_pol.c_str());
-        auto f_n = new TF1(("f_n" + name).c_str(), n_pol.c_str());
+        auto f_p = new TF1("f_p", p_pol.c_str());
+        auto f_n = new TF1("f_n", n_pol.c_str());
         int n = (range[1] - range[0]) / step;
         double pos[n];
         double neg[n];
@@ -108,9 +110,9 @@ public:
             neg[i] = par[1] - par[2];
         }
         auto g_p = new TGraph(n, x, pos);
-        g_p->Fit(("f_p" + name).c_str(), "q", "");
+        g_p->Fit("f_p", "q", "");
         auto g_n = new TGraph(n, x, neg);
-        g_n->Fit(("f_n" + name).c_str(), "q", "");
+        g_n->Fit("f_n", "q", "");
         auto c = new TCanvas("c", "c");
         c->SetLogz(1);
         histo2d->Draw("colz");
@@ -140,11 +142,11 @@ public:
         }
         draw_vec(proj_fit, "bmn_hist/projections/" + name + "_", "E", 1);
         auto g_a = new TGraph(n, x, amplitude);
-        g_a->Fit(("f_a" + name).c_str(), "q", "");
+        g_a->Fit("f_a", "q", "");
         auto g_m = new TGraph(n, x, mean);
-        g_m->Fit(("f_m" + name).c_str(), "q", "");
+        g_m->Fit("f_m", "q", "");
         auto g_s = new TGraph(n, x, sigma);
-        g_s->Fit(("f_s" + name).c_str(), "q", "");
+        g_s->Fit("f_s", "q", "");
         auto c = new TCanvas("c", "c");
         g_a->Draw("ac*");
         c->SaveAs(("bmn_hist/parameters/amplitude_" + name + ".png").c_str());
@@ -155,8 +157,8 @@ public:
         delete c;
     }
     void selection_pid_range(std::string p_pol, std::string n_pol) {
-        auto f_p = new TF1(("f_p" + name).c_str(), p_pol.c_str());
-        auto f_n = new TF1(("f_n" + name).c_str(), n_pol.c_str());
+        auto f_p = new TF1("f_p", p_pol.c_str());
+        auto f_n = new TF1("f_n", n_pol.c_str());
         int n = (range[1] - range[0]) / step;
         double pos[n];
         double neg[n];
@@ -171,9 +173,9 @@ public:
             neg[i] = par[1] - par[2];
         }
         auto g_p = new TGraph(n, x, pos);
-        g_p->Fit(("f_p" + name).c_str(), "q", "");
+        g_p->Fit("f_p", "q", "");
         auto g_n = new TGraph(n, x, neg);
-        g_n->Fit(("f_n" + name).c_str(), "q", "");
+        g_n->Fit("f_n", "q", "");
         auto c = new TCanvas("c", "c");
         c->SetLogz(1);
         histo2d->Draw("colz");
