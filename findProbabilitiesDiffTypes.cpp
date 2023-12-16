@@ -6,6 +6,8 @@
 #include <TCanvas.h>
 #include <TGraph.h>
 #include <TLine.h>
+#include <TH2D.h>
+#include <TStyle.h>
 
 #include "src/PidProbabilityDiffTypes.cpp"
 
@@ -18,94 +20,72 @@ void findProbabilitiesDiffTypes(std::string in_file_name){
     PidProbabilityDiffTypes prob_400(types, in_file_name, "400");
     PidProbabilityDiffTypes prob_700(types, in_file_name, "700");
 
-    /*const std::vector<double> &res = prob_400.findProbabilities(-1, 0.5);
-    for (auto ans : res){
-        std::cout << "Probability = " << ans << std::endl;
-    }*/
-
+    /*prob_400.printProbabilities(9., 2.09);*/
 
     std::vector<double> m2;
+    std::vector<double> pq;
+    std::vector<std::vector<double>> probabilities_400(types.size());
+    std::vector<std::vector<double>> probabilities_700(types.size());
 
-    std::vector<double> probPion_400;
-    std::vector<double> probPion_700;
-    std::vector<double> probProton_400;
-    std::vector<double> probProton_700;
-    std::vector<double> probDeuteron_400;
-    std::vector<double> probDeuteron_700;
-    std::vector<double> probTriton_400;
-    std::vector<double> probTriton_700;
-    std::vector<double> probHelion_400;
-    std::vector<double> probHelion_700;
-    std::vector<double> probAll_400;
-    std::vector<double> probAll_700;
     std::vector<TGraph*> graph;
 
-    std::vector<double> temp;
+    std::vector<double> temp_4;
+    std::vector<double> temp_7;
 
-    for (double i = 0.5; i < 5; i += 1.) {
+    /*for (double p = 0.5; p < 5; p += 1.) {
         for (double m = -0.1; m < 10.; m += 0.1) {
             m2.push_back(m);
-            temp = prob_400.findProbabilities(m, i);
-            probPion_400.push_back(temp.at(0));
-            probProton_400.push_back(temp.at(1));
-            probDeuteron_400.push_back(temp.at(2));
-            probTriton_400.push_back(temp.at(3));
-            probHelion_400.push_back(temp.at(4));
-
-            temp = prob_700.findProbabilities(m, i);
-            probPion_700.push_back(temp.at(0));
-            probProton_700.push_back(temp.at(1));
-            probDeuteron_700.push_back(temp.at(2));
-            probTriton_700.push_back(temp.at(3));
-            probHelion_700.push_back(temp.at(4));
-
-            probAll_400.push_back(probPion_400.back() + probProton_400.back() + probDeuteron_400.back() + probTriton_400.back() + probHelion_400.back());
-            probAll_700.push_back(probPion_700.back() + probProton_700.back() + probDeuteron_700.back() + probTriton_700.back() + probHelion_700.back());
+            temp_4 = prob_400.findProbabilities(m, p);
+            temp_7 = prob_700.findProbabilities(m, p);
+            for (int j = 0; j < types.size(); ++j) {
+                probabilities_400.at(j).push_back(temp_4.at(j));
+                probabilities_700.at(j).push_back(temp_7.at(j));
+            }
         }
-        graph.push_back(new TGraph(m2.size(), m2.data(), probPion_400.data()));
-        graph.push_back(new TGraph(m2.size(), m2.data(), probPion_700.data()));
-        graph.push_back(new TGraph(m2.size(), m2.data(), probProton_400.data()));
-        graph.push_back(new TGraph(m2.size(), m2.data(), probProton_700.data()));
-        graph.push_back(new TGraph(m2.size(), m2.data(), probDeuteron_400.data()));
-        graph.push_back(new TGraph(m2.size(), m2.data(), probDeuteron_700.data()));
-        graph.push_back(new TGraph(m2.size(), m2.data(), probTriton_400.data()));
-        graph.push_back(new TGraph(m2.size(), m2.data(), probTriton_700.data()));
-        graph.push_back(new TGraph(m2.size(), m2.data(), probHelion_400.data()));
-        graph.push_back(new TGraph(m2.size(), m2.data(), probHelion_700.data()));
-
-        graph.push_back(new TGraph(m2.size(), m2.data(), probAll_400.data()));
-        graph.push_back(new TGraph(m2.size(), m2.data(), probAll_700.data()));
-
-        graph.at(0)->SetTitle(("Pion probability 400, pq = " + std::to_string(i)).c_str());
-        graph.at(1)->SetTitle(("Pion probability 700, pq = " + std::to_string(i)).c_str());
-        graph.at(2)->SetTitle(("Proton probability 400, pq = " + std::to_string(i)).c_str());
-        graph.at(3)->SetTitle(("Proton probability 700, pq = " + std::to_string(i)).c_str());
-        graph.at(4)->SetTitle(("Deuteron probability 400, pq = " + std::to_string(i)).c_str());
-        graph.at(5)->SetTitle(("Deuteron probability 700, pq = " + std::to_string(i)).c_str());
-        graph.at(6)->SetTitle(("Triton probability 400, pq = " + std::to_string(i)).c_str());
-        graph.at(7)->SetTitle(("Triton probability 700, pq = " + std::to_string(i)).c_str());
-        graph.at(8)->SetTitle(("Helion probability 400, pq = " + std::to_string(i)).c_str());
-        graph.at(9)->SetTitle(("Helion probability 700, pq = " + std::to_string(i)).c_str());
-
-        graph.at(10)->SetTitle(("Sum probability 400, pq = " + std::to_string(i)).c_str());
-        graph.at(11)->SetTitle(("Sum probability 700, pq = " + std::to_string(i)).c_str());
+        for (int j = 0; j < types.size(); ++j) {
+            graph.push_back(new TGraph(m2.size(), m2.data(), probabilities_400.at(j).data()));
+            graph.back()->SetTitle((types.at(j) + " probability 400, pq = " + std::to_string(p)).c_str());
+            graph.push_back(new TGraph(m2.size(), m2.data(), probabilities_700.at(j).data()));
+            graph.back()->SetTitle((types.at(j) + " probability 700, pq = " + std::to_string(p)).c_str());
+        }
         for (int j = 0; j < graph.size(); ++j) {
             graph.at(j)->Draw("*ac");
             l->Draw("same");
-            c->SaveAs(("bmn_hist/probabilities/" + std::to_string((int) (2 * i)) + "_" + std::to_string(j) + ".png").c_str());
+            c->SaveAs(("bmn_hist/probabilities/" + std::to_string((int) (2 * p)) + "_" + std::to_string(j) + ".png").c_str());
         }
         graph.clear();
         m2.clear();
-        probPion_400.clear();
-        probPion_700.clear();
-        probProton_400.clear();
-        probProton_700.clear();
-        probDeuteron_400.clear();
-        probDeuteron_700.clear();
-
-        probAll_400.clear();
-        probAll_700.clear();
+        for (int j = 0; j < probabilities_400.size(); ++j) {
+            probabilities_400.at(j).clear();
+            probabilities_700.at(j).clear();
+        }
+    }*/
+    gStyle->SetOptStat("n");
+    std::vector<TH2D*> h2_pq_m2_prob_400;
+    std::vector<TH2D*> h2_pq_m2_prob_700;
+    for (int i = 0; i < types.size(); ++i) {
+        h2_pq_m2_prob_400.push_back(new TH2D((types.at(i) + "_m2_pq_400").c_str(),
+                                             ";p/q (GeV/c);m^{2}_{TOF-400} (GeV^{2}/c^{4})", 451, 0.5, 5., 1101, -1., 10.));
+        h2_pq_m2_prob_700.push_back(new TH2D((types.at(i) + "_m2_pq_700").c_str(),
+                                             ";p/q (GeV/c);m^{2}_{TOF-400} (GeV^{2}/c^{4})", 451, 0.5, 5., 1101, -1., 10.));
     }
+    for (double p = 0.5; p < 5.; p += 0.01) {
+        for (double m = -1.0; m < 10.; m += 0.01) {
+            temp_4 = prob_400.findProbabilities(m, p);
+            temp_7 = prob_700.findProbabilities(m, p);
+            for (int i = 0; i < types.size(); ++i) {
+                h2_pq_m2_prob_400.at(i)->Fill(p, m, temp_4.at(i));
+                h2_pq_m2_prob_700.at(i)->Fill(p, m, temp_7.at(i));
+            }
+        }
+    }
+    for (int i = 0; i < types.size(); ++i) {
+        h2_pq_m2_prob_400.at(i)->Draw("colz");
+        c->SaveAs(("bmn_hist/h2_probabilities/" + types.at(i) + "_h2_pq_m2_prob_400.png").c_str());
+        h2_pq_m2_prob_700.at(i)->Draw("colz");
+        c->SaveAs(("bmn_hist/h2_probabilities/" + types.at(i) + "_h2_pq_m2_prob_700.png").c_str());
+    }
+
     /*std::cout << "5 * sigma = " << sigma << std::endl;
     std::cout << "sigmaIntegral = " << sigmaIntegral << std::endl;
     std::cout << "pionProb_b = " << pionProb_b << std::endl;*/

@@ -74,4 +74,10 @@ public:
         }
         return probabilities;
     }
+    void printProbabilities(double m2, double pq){
+        const std::vector<double> &res = findProbabilities(m2, pq);
+        for (auto ans : res){
+            std::cout << "Probability = " << ans << std::endl;
+        }
+    }
 };
