@@ -6,17 +6,7 @@
 #include <TF1.h>
 #include <TFile.h>
 
-struct ParticleParameters{
-    TF1* amplitude;
-    TF1* mean;
-    TF1* sigma;
-};
-
-struct ParticleCurrParameters{
-    double amplitude;
-    double mean;
-    double sigma;
-};
+#include "ParticleFitData.cpp"
 
 class PidProbabilityDiffTypes{
 private:

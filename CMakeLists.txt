@@ -8,4 +8,4 @@ find_package(ROOT REQUIRED COMPONENTS RIO Net)
 
 include(${ROOT_USE_FILE})
 
-add_executable(bmn_probability main.cpp src/DrawingFunctions.cpp src/Pid.cpp pidFunctions.cpp src/PidProbability.cpp findProbabilities.cpp src/PidProbabilityDiffTypes.cpp findProbabilitiesDiffTypes.cpp)
+add_executable(bmn_probability main.cpp src/DrawingFunctions.cpp src/Pid.cpp pidFunctions.cpp src/PidProbabilityDiffTypes.cpp findProbabilitiesDiffTypes.cpp functionsFit.cpp src/PidFit.cpp src/ParticleFitData.cpp)

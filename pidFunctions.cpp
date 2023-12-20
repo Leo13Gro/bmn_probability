@@ -44,7 +44,9 @@ void pidFunctions(std::string in_file_name, std::string out_file_name = "PidFunc
     particlesPid.push_back(new Pid("triton_700", "pol 4", "pol 5", "pol 5", h2_pq_mass2_tof700, { 40, 75 }, 5, {
             {7.5, 9.3}, {7.5, 9.}, {7.5, 9.}, {7.5, 8.5}, {7.5, 8.5}, {7.5, 8.5}, {7.5, 8.5} }));
 
-
+    for (auto pPid : particlesPid) {
+        pPid->selection_pid();
+    }
 
     //				================================Writing in file======================================
     auto f_out = new TFile(out_file_name.c_str(), "recreate");

@@ -19,8 +19,14 @@ void findProbabilitiesDiffTypes(std::string in_file_name){
     std::vector<std::string> types = {"pionPos", "proton", "deuteron", "triton", "helion"};
     PidProbabilityDiffTypes prob_400(types, in_file_name, "400");
     PidProbabilityDiffTypes prob_700(types, in_file_name, "700");
+    double p;
+    std::cin >> p;
+    while(p != 100){
+        prob_400.printProbabilities(0.3, p);
+        std::cin >> p;
+    }
 
-    /*prob_400.printProbabilities(9., 2.09);*/
+    /*prob_400.printProbabilities(0.4, 2.09);*/
 
     std::vector<double> m2;
     std::vector<double> pq;
@@ -60,7 +66,7 @@ void findProbabilitiesDiffTypes(std::string in_file_name){
             probabilities_700.at(j).clear();
         }
     }*/
-    gStyle->SetOptStat("n");
+    /*gStyle->SetOptStat("n");
     std::vector<TH2D*> h2_pq_m2_prob_400;
     std::vector<TH2D*> h2_pq_m2_prob_700;
     for (int i = 0; i < types.size(); ++i) {
@@ -84,7 +90,7 @@ void findProbabilitiesDiffTypes(std::string in_file_name){
         c->SaveAs(("bmn_hist/h2_probabilities/" + types.at(i) + "_h2_pq_m2_prob_400.png").c_str());
         h2_pq_m2_prob_700.at(i)->Draw("colz");
         c->SaveAs(("bmn_hist/h2_probabilities/" + types.at(i) + "_h2_pq_m2_prob_700.png").c_str());
-    }
+    }*/
 
     /*std::cout << "5 * sigma = " << sigma << std::endl;
     std::cout << "sigmaIntegral = " << sigmaIntegral << std::endl;
